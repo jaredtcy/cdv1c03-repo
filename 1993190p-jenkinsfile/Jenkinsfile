@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+    stages {
+        stage('ST1-<your polite id>') {
+            steps {
+                echo 'ST1-<your polite id>: Setup Release Environment Completed.'
+            }
+        }
+
+        stage('ST2-<your polite id>') {
+            steps {
+                sh '''
+                docker rm -f server1-<your polite id> || true
+                docker run -dit --name server1-<your polite id> -p 32700:80 svr-image-<your polite id>
+                '''
+                echo 'ST2-<your polite id>: Server1 is successfully created'
+            }
+        }
+
+        stage('ST3-<your polite id>') {
+            steps {
+                echo 'ST3-<your polite id>: Server1 is healthy – Health check done'
+            }
+        }
+
+        stage('ST4-Parallel-<your polite id>') {
+            parallel {
+                stage('ST4A-<your polite id>') {
+                    steps {
+                        echo 'ST4A-<your polite id>: SQLI Check Completed'
+                    }
+                }
+                stage('ST4B-<your polite id>') {
+                    steps {
+                        echo 'ST4B-<your polite id>: XSS Check Completed'
+                    }
+                }
+            }
+        }
+
+        stage('ST5-<your polite id>') {
+            steps {
+                script {
+                    def userInput = input(
+                        id: 'userInput', message: 'Continue the pipeline?',
+                        parameters: [choice(choices: ['Proceed', 'Abort'], description: 'Select option', name: 'action')]
+                    )
+                    if (userInput == 'Abort') {
+                        error("Pipeline aborted by user.")
+                    } else {
+                        echo 'ST5-<your polite id> : Continue the pipeline.'
+                    }
+                }
+            }
+        }
+
+        stage('ST6-<your polite id>') {
+            steps {
+                echo 'ST6-<your polite id> : Ready for next phase'
+            }
+        }
+    }
+}
