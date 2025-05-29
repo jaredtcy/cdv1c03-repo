@@ -29,13 +29,10 @@ pipeline {
         }
 
         stage('ST4-Parallel-1993190p') {
-            steps {
-                echo 'ST4-Parallel-1993190p: Security Scrutinises'
-            }
-
             parallel {
                 stage('ST4A-1993190p') {
                     steps {
+                        echo 'ST4-Parallel-1993190p: Security Scrutinises'
                         echo 'ST4A-1993190p: SQLI Check Completed'
                     }
                 }
