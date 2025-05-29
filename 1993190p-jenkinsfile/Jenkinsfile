@@ -1,11 +1,17 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'svr-image-1993190p'
+        CONTAINER_NAME = 'server1-1993190p'
+    }
+
     triggers {
-        pollSCM('H/4 * * * *') // Every 4 minutes
+        pollSCM('H/4 * * * *') // every 4 minutes
     }
 
     stages {
+
         stage('ST1-1993190p') {
             steps {
                 echo 'ST1-1993190p: Setup Release Environment Completed.'
@@ -14,11 +20,13 @@ pipeline {
 
         stage('ST2-1993190p') {
             steps {
-                sh '''
-                    docker rm -f server1-1993190p || true
-                    docker run -dit --name server1-1993190p -p 32700:80 svr-image-1993190p
-                    echo "ST2-1993190p: Server1 is successfully created"
-                '''
+                script {
+                    // Remove old container if exists
+                    sh "docker rm -f ${CONTAINER_NAME} || true"
+                    // Run new container
+                    sh "docker run -dit --name ${CONTAINER_NAME} -p 32700:80 ${IMAGE_NAME}"
+                }
+                echo 'ST2-1993190p: Server1 is successfully created'
             }
         }
 
@@ -30,9 +38,13 @@ pipeline {
 
         stage('ST4-Parallel-1993190p') {
             parallel {
-                stage('ST4A-1993190p') {
+                stage('ST4-1993190p') {
                     steps {
                         echo 'ST4-Parallel-1993190p: Security Scrutinises'
+                    }
+                }
+                stage('ST4A-1993190p') {
+                    steps {
                         echo 'ST4A-1993190p: SQLI Check Completed'
                     }
                 }
@@ -47,14 +59,14 @@ pipeline {
         stage('ST5-1993190p') {
             steps {
                 script {
-                    def userInput = input(id: 'Proceed', message: 'Continue the pipeline?', parameters: [
-                        choice(name: 'Confirm', choices: ['Proceed', 'Abort'], description: 'Select an option')
-                    ])
+                    def userInput = input message: 'Continue the pipeline?', ok: 'Proceed', parameters: [
+                        choice(name: 'Decision', choices: ['Proceed', 'Abort'], description: 'Select Proceed or Abort')
+                    ]
 
-                    if (userInput == 'Proceed') {
-                        echo 'ST5-1993190p: Continue the pipeline.'
+                    if (userInput == 'Abort') {
+                        error("ST5-1993190p: Pipeline aborted by user.")
                     } else {
-                        error('ST5-1993190p: Pipeline aborted by user.')
+                        echo 'ST5-1993190p : Continue the pipeline.'
                     }
                 }
             }
@@ -62,7 +74,7 @@ pipeline {
 
         stage('ST6-1993190p') {
             steps {
-                echo 'ST6-1993190p: Ready for next phase'
+                echo 'ST6-1993190p : Ready for next phase'
             }
         }
     }
