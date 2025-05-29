@@ -1,44 +1,44 @@
 pipeline {
     agent any
     stages {
-        stage('ST1-<your polite id>') {
+        stage('ST1-1993190p') {
             steps {
-                echo 'ST1-<your polite id>: Setup Release Environment Completed.'
+                echo 'ST1-1993190p: Setup Release Environment Completed.'
             }
         }
 
-        stage('ST2-<your polite id>') {
+        stage('ST2-1993190p') {
             steps {
                 sh '''
-                docker rm -f server1-<your polite id> || true
-                docker run -dit --name server1-<your polite id> -p 32700:80 svr-image-<your polite id>
+                docker rm -f server1-1993190p || true
+                docker run -dit --name server1-1993190p -p 32700:80 svr-image-1993190p
                 '''
-                echo 'ST2-<your polite id>: Server1 is successfully created'
+                echo 'ST2-1993190p: Server1 is successfully created'
             }
         }
 
-        stage('ST3-<your polite id>') {
+        stage('ST3-1993190p') {
             steps {
-                echo 'ST3-<your polite id>: Server1 is healthy – Health check done'
+                echo 'ST3-1993190p: Server1 is healthy – Health check done'
             }
         }
 
-        stage('ST4-Parallel-<your polite id>') {
+        stage('ST4-Parallel-1993190p') {
             parallel {
-                stage('ST4A-<your polite id>') {
+                stage('ST4A-1993190p') {
                     steps {
-                        echo 'ST4A-<your polite id>: SQLI Check Completed'
+                        echo 'ST4A-1993190p: SQLI Check Completed'
                     }
                 }
-                stage('ST4B-<your polite id>') {
+                stage('ST4B-1993190p') {
                     steps {
-                        echo 'ST4B-<your polite id>: XSS Check Completed'
+                        echo 'ST4B-1993190p: XSS Check Completed'
                     }
                 }
             }
         }
 
-        stage('ST5-<your polite id>') {
+        stage('ST5-1993190p') {
             steps {
                 script {
                     def userInput = input(
@@ -48,15 +48,15 @@ pipeline {
                     if (userInput == 'Abort') {
                         error("Pipeline aborted by user.")
                     } else {
-                        echo 'ST5-<your polite id> : Continue the pipeline.'
+                        echo 'ST5-1993190p : Continue the pipeline.'
                     }
                 }
             }
         }
 
-        stage('ST6-<your polite id>') {
+        stage('ST6-1993190p') {
             steps {
-                echo 'ST6-<your polite id> : Ready for next phase'
+                echo 'ST6-1993190p : Ready for next phase'
             }
         }
     }
