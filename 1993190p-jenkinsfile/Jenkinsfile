@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    triggers {
+        pollSCM('H/4 * * * *') // Every 4 minutes
+    }
+
     stages {
         stage('ST1-1993190p') {
             steps {
@@ -10,10 +15,10 @@ pipeline {
         stage('ST2-1993190p') {
             steps {
                 sh '''
-                docker rm -f server1-1993190p || true
-                docker run -dit --name server1-1993190p -p 32700:80 svr-image-1993190p
+                    docker rm -f server1-1993190p || true
+                    docker run -dit --name server1-1993190p -p 32700:80 svr-image-1993190p
+                    echo "ST2-1993190p: Server1 is successfully created"
                 '''
-                echo 'ST2-1993190p: Server1 is successfully created'
             }
         }
 
@@ -24,6 +29,10 @@ pipeline {
         }
 
         stage('ST4-Parallel-1993190p') {
+            steps {
+                echo 'ST4-Parallel-1993190p: Security Scrutinises'
+            }
+
             parallel {
                 stage('ST4A-1993190p') {
                     steps {
@@ -41,14 +50,14 @@ pipeline {
         stage('ST5-1993190p') {
             steps {
                 script {
-                    def userInput = input(
-                        id: 'userInput', message: 'Continue the pipeline?',
-                        parameters: [choice(choices: ['Proceed', 'Abort'], description: 'Select option', name: 'action')]
-                    )
-                    if (userInput == 'Abort') {
-                        error("Pipeline aborted by user.")
+                    def userInput = input(id: 'Proceed', message: 'Continue the pipeline?', parameters: [
+                        choice(name: 'Confirm', choices: ['Proceed', 'Abort'], description: 'Select an option')
+                    ])
+
+                    if (userInput == 'Proceed') {
+                        echo 'ST5-1993190p: Continue the pipeline.'
                     } else {
-                        echo 'ST5-1993190p : Continue the pipeline.'
+                        error('ST5-1993190p: Pipeline aborted by user.')
                     }
                 }
             }
@@ -56,7 +65,7 @@ pipeline {
 
         stage('ST6-1993190p') {
             steps {
-                echo 'ST6-1993190p : Ready for next phase'
+                echo 'ST6-1993190p: Ready for next phase'
             }
         }
     }
