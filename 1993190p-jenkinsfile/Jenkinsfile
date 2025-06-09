@@ -26,7 +26,7 @@ pipeline {
                     // Run new container
                     sh "docker run -dit --name ${CONTAINER_NAME} -p 32700:80 ${IMAGE_NAME}"
                 }
-                echo 'ST2-1993190p: Server1 is successfully created.'
+                echo 'ST2-1993190p: Server1 is successfully created'
             }
         }
 
